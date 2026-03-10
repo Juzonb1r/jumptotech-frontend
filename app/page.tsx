@@ -1,65 +1,187 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+
+type Course = {
+  id: number;
+  title: string;
+  author: string;
+  level: string;
+  price: string;
+  rating: number;
+};
+
+export default function HomePage() {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/courses")
+      .then((res) => res.json())
+      .then((data) => {
+        setCourses(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load courses:", err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main style={{ fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial" }}>
+      <header
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+          background: "white",
+          borderBottom: "1px solid #eee",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            padding: "12px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          <div style={{ fontWeight: 900, fontSize: 18 }}>JumpToTech</div>
+          <div style={{ flex: 1 }} />
+          <button
+            style={{
+              border: "1px solid #111",
+              background: "#111",
+              color: "white",
+              padding: "8px 12px",
+              borderRadius: 10,
+              fontWeight: 700,
+            }}
+          >
+            Sign up
+          </button>
+        </div>
+      </header>
+
+      <section style={{ background: "linear-gradient(180deg,#f7f7ff,white)" }}>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            padding: "48px 16px 24px",
+          }}
+        >
+          <h1 style={{ fontSize: 42, lineHeight: 1.1, margin: "0 0 10px" }}>
+            Learn DevOps with real projects
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p style={{ fontSize: 16, opacity: 0.8, maxWidth: 620 }}>
+            Kubernetes, AWS, Terraform, GitOps, CI/CD. A simple Udemy-like learning platform built with
+            microservices.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section style={{ background: "#fafafa", borderTop: "1px solid #eee" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "26px 16px 44px" }}>
+          <h2 style={{ fontSize: 22, margin: 0 }}>Popular courses</h2>
+
+          {loading ? (
+            <p style={{ marginTop: 16 }}>Loading courses...</p>
+          ) : (
+            <div
+              style={{
+                marginTop: 16,
+                display: "grid",
+                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                gap: 14,
+              }}
+            >
+              {courses.map((course) => (
+                <article
+                  key={course.id}
+                  style={{
+                    border: "1px solid #eee",
+                    borderRadius: 16,
+                    background: "white",
+                    overflow: "hidden",
+                    boxShadow: "0 6px 18px rgba(0,0,0,0.05)",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: 120,
+                      background:
+                        "linear-gradient(135deg, rgba(84,67,255,0.18), rgba(17,17,17,0.08))",
+                      padding: 14,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "start",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 900,
+                        fontSize: 12,
+                        background: "#111",
+                        color: "white",
+                        padding: "6px 10px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      Bestseller
+                    </div>
+                    <div style={{ fontSize: 20 }}>🎓</div>
+                  </div>
+
+                  <div style={{ padding: 14 }}>
+                    <div style={{ fontWeight: 900, lineHeight: 1.25 }}>{course.title}</div>
+                    <div style={{ fontSize: 12, opacity: 0.75, marginTop: 6 }}>
+                      {course.author}
+                    </div>
+
+                    <div style={{ marginTop: 10, fontSize: 13 }}>
+                      <span style={{ fontWeight: 900 }}>{course.rating}</span>{" "}
+                      <span style={{ opacity: 0.8 }}>⭐</span>
+                    </div>
+
+                    <div style={{ marginTop: 8, fontSize: 12, opacity: 0.75 }}>
+                      {course.level}
+                    </div>
+
+                    <div
+                      style={{
+                        marginTop: 12,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div style={{ fontWeight: 1000, fontSize: 16 }}>{course.price}</div>
+                      <button
+                        style={{
+                          border: "1px solid #111",
+                          background: "#111",
+                          color: "white",
+                          padding: "9px 12px",
+                          borderRadius: 12,
+                          cursor: "pointer",
+                          fontWeight: 800,
+                          fontSize: 13,
+                        }}
+                      >
+                        Enroll
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
