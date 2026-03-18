@@ -79,7 +79,7 @@ export default function HomePage() {
           </h1>
           <p style={{ fontSize: 16, opacity: 0.8, maxWidth: 620 }}>
             Kubernetes, AWS, Terraform, GitOps, CI/CD. A simple Udemy-like learning platform built with
-            microservices.
+            microservices. TEST!!!
           </p>
         </div>
       </section>
